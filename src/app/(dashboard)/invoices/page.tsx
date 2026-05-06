@@ -1,0 +1,263 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Table from "@/components/shared/table/Table";
+import { TableColumn } from "@/components/shared/table/TableHeader";
+import { CardSkeleton } from "@/components/ui/skeleton";
+import { invoiceMetricsData } from "@/constants";
+import { useRouter } from "next/navigation";
+import { RoutePaths } from "@/routes/routesPath";
+import { UsdtIcon } from "@/../public/svg";
+import TitleHeader from "@/components/features/dashboard/TitleHeader";
+import { formatCurrency } from "@/utils/formatters";
+
+import { Invoice } from "@/lib/data/invoices";
+import { FinanceService } from "@/lib/api/finance";
+
+const Invoices: React.FC = () => {
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState<string>("");
+
+  useEffect(() => {
+    FinanceService.getInvoices()
+      .then(setInvoices)
+      .catch(() => setInvoices([]))
+      .finally(() => setLoading(false));
+  }, []);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const router = useRouter();
+
+  const filteredInvoices = invoices.filter((invoice) =>
+    [
+      invoice.name,
+      invoice.number,
+      invoice.company,
+      invoice.title,
+      invoice.invoiceNo,
+    ]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(search.toLowerCase())),
+  );
+
+  const showModal = () => console.log("Show filter modal");
+
+  const invoiceColumns: TableColumn[] = [
+    { key: "invoiceNo", header: "Invoice No." },
+    { key: "title", header: "Title" },
+    { key: "amount", header: "Amount", align: "center" },
+    { key: "paidIn", header: "Paid in", align: "center" },
+    { key: "status", header: "Status", align: "center" },
+    { key: "issueDate", header: "Issue date", align: "right" },
+  ];
+
+  const getStatusBadge = (status: Invoice["status"]) => {
+    switch (status) {
+      case "Pending":
+        return ` border-[#E79A23] bg-[#FEF7EB] text-[#E79A23]`;
+      case "Overdue":
+        return `border-[#C64242] bg-[#FEECEC] text-[#C64242]`;
+      case "Paid":
+        return `border-[#26902B] bg-[#EDFEEC] text-[#26902B]`;
+      case "Approved":
+        return `border-[#6B7AFF] bg-[#EEF0FF] text-[#4751D6]`;
+      default:
+        return "";
+    }
+  };
+
+  const renderInvoiceCell = (item: Invoice, column: TableColumn) => {
+    switch (column.key) {
+      case "title":
+        return (
+          <div className="text-text-header font-semibold dark:text-white">
+            {item.title}
+          </div>
+        );
+      case "amount":
+        return (
+          <div className="text-text-header font-semibold dark:text-white">
+            {formatCurrency(item.amount, { currency: item.paidIn, isKobo: false })}
+          </div>
+        );
+      case "paidIn":
+        return (
+          <div className="flex items-center font-medium gap-1 py-1.5 px-3 border border-border-primary bg-fill-background rounded-full w-fit mx-auto dark:border-gray-700 dark:bg-gray-800">
+            <UsdtIcon />
+            <span className="text-text-header dark:text-white">
+              {item.paidIn}
+            </span>
+          </div>
+        );
+      case "status":
+        return (
+          <span
+            className={`px-2 py-1 rounded-full text-sm font-semibold border ${getStatusBadge(item.status)}`}
+          >
+            {item.status}
+          </span>
+        );
+      case "invoiceNo":
+        return (
+          <p className="font-medium text-gray-900 dark:text-gray-100">
+            {item.invoiceNo}
+          </p>
+        );
+      case "issueDate":
+        return <span className="text-gray-600">{item.issueDate}</span>;
+      default:
+        return (
+          (item as Record<string, string | number | undefined>)[column.key] ||
+          "-"
+        );
+    }
+  };
+
+  const renderMobileCell = (item: Invoice) => (
+    <div className="flex gap-4 justify-between">
+      <div className="space-y-2 flex-1 min-w-0">
+        <p className="truncate font-semibold text-gray-500 dark:text-gray-400">
+          {item.invoiceNo}
+        </p>
+        <span className="flex items-center gap-2 ">
+          <p className="text-xs font-medium text-gray-300 dark:text-gray-500">
+            {formatCurrency(item.amount, { currency: item.paidIn, isKobo: false })}
+          </p>
+          <div className="w-px self-stretch bg-gray-150 dark:bg-gray-700" />
+          <div className="flex items-center font-medium gap-1 ">
+            <UsdtIcon />
+            <span className="text-gray-600 text-sm font-medium dark:text-gray-400">
+              {item.paidIn}
+            </span>
+          </div>
+        </span>
+      </div>
+
+      <div className="space-y-2 shrink-0 flex flex-col items-end justify-between">
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-semibold border ${getStatusBadge(item.status)}`}
+        >
+          {item.status}
+        </span>
+        <p className="text-xs font-medium text-gray-400">{item.issueDate}</p>
+      </div>
+    </div>
+  );
+
+  const handleSelectItem = (id: string, checked: boolean) =>
+    setSelectedItems((prev) =>
+      checked ? [...prev, id] : prev.filter((x) => x !== id),
+    );
+
+  const handleSelectAll = (checked: boolean) =>
+    setSelectedItems(checked ? filteredInvoices.map((i) => i.id) : []);
+
+  const handleRowClick = (invoice: Invoice) => {
+    router.push(`${RoutePaths.INVOICES}/${invoice.id}`);
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
+  return (
+    <div className="flex flex-col flex-1 bg-gray-100 w-full min-h-full dark:bg-gray-950">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white py-6 border-b border-[#DCE0E5] dark:bg-gray-900 dark:border-gray-800"
+      >
+        <TitleHeader title="Invoices" isBackButton={false} isExportButton />
+      </motion.div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col flex-1 w-full h-full px-4 py-4 "
+        >
+          <div className="gap-4 w-full flex overflow-x-auto mb-4 sm:grid sm:grid-cols-4 sm:overflow-x-visible">
+            {loading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="min-w-3xs w-full">
+                  <CardSkeleton />
+                </div>
+              ))
+            ) : (
+              invoices.length > 0 &&
+              invoiceMetricsData.map((metric) => (
+                <motion.div
+                  variants={itemVariants}
+                  key={metric.title}
+                  className="min-w-3xs w-full"
+                >
+                  <div className="h-full p-4 bg-white rounded-lg min-w-60 lg:w-full dark:bg-gray-900">
+                    <span className="flex justify-between text-xs font-medium">
+                      <p className="text-text-subtext dark:text-gray-400">
+                        {metric.title}
+                      </p>
+                      <p className="text-[#7F8C9F] dark:text-gray-500">
+                        This year
+                      </p>
+                    </span>
+                    <hr className="my-4 text-border-primary dark:border-gray-800" />
+                    <div className="flex items-center justify-between">
+                      <span>
+                        <p className="mb-1 text-2xl font-bold text-text-header lg:text-4xl dark:text-white">
+                          {metric.value}
+                        </p>
+                        <p className="text-sm font-medium text-[#7F8C9F] dark:text-gray-500">
+                          {metric.subValue}
+                        </p>
+                      </span>
+                      <span className="text-primary-500">{metric.icon}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </div>
+
+          <motion.div variants={itemVariants}>
+            <Table
+              data={filteredInvoices}
+              columns={invoiceColumns}
+              search={search}
+              setSearch={setSearch}
+              showModal={showModal}
+              selectedTab="Invoice history"
+              searchPlaceholder="Search by title..."
+              selectedItems={selectedItems}
+              onSelectItem={handleSelectItem}
+              onSelectAll={handleSelectAll}
+              onRowClick={handleRowClick}
+              renderCell={renderInvoiceCell}
+              isLoading={loading}
+              emptyTitle={search ? "No invoices found" : "No invoices yet"}
+              emptyDescription={
+                search
+                  ? `No invoices match "${search}". Try adjusting your search.`
+                  : "Invoices sent to you will be displayed here"
+              }
+              renderMobileCell={renderMobileCell}
+            />
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default Invoices;

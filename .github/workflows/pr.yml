@@ -1,0 +1,20 @@
+name: PR
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  # This job was removed because apps/indexer does not exist in this repository.
+  # If you intended to have an indexer here, please restore it and ensure the paths are correct.
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Skipped Indexer PR as directory is missing"
