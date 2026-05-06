@@ -20,7 +20,7 @@ const NotificationsModal: React.FC<NotificationsModalProps> = ({ onClose }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
-    const savedNotifications = localStorage.getItem("vestroll-notifications");
+    const savedNotifications = localStorage.getItem("fluxinvoice-notifications");
     if (savedNotifications) {
       setNotifications(JSON.parse(savedNotifications));
     } else {

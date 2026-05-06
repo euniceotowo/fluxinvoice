@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const THEME_KEY = "vestroll-theme";
+const THEME_KEY = "fluxinvoice-theme";
 
 export function useTheme() {
   const [theme, setTheme] = useState<"light" | "dark">("light");

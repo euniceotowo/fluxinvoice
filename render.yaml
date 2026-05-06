@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: vestroll
+    name: fluxinvoice
     env: node
     plan: free
     buildCommand: pnpm install && pnpm run build
@@ -14,12 +14,12 @@ services:
         value: production
       - key: DATABASE_URL
         fromDatabase:
-          name: vestroll-db
+          name: fluxinvoice-db
           property: connectionString
       - key: REDIS_URL
         fromService:
           type: redis
-          name: vestroll-redis
+          name: fluxinvoice-redis
           property: connectionString
       - key: TRANSACTION_CACHE_BACKEND
         value: db
@@ -38,7 +38,7 @@ services:
       - key: APPLE_CLIENT_ID
         sync: false
       - key: EMAIL_FROM
-        value: noreply@vestroll.com
+        value: noreply@fluxinvoice.com
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
       - key: CLOUDINARY_API_KEY
@@ -73,10 +73,10 @@ services:
         value: "false"
 
   - type: redis
-    name: vestroll-redis
+    name: fluxinvoice-redis
     plan: free
     ipAllowList: []
 
 databases:
-  - name: vestroll-db
+  - name: fluxinvoice-db
     plan: free

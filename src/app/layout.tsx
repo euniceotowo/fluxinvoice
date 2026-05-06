@@ -4,7 +4,7 @@ import { ReduxProvider } from "@/components/providers/provider";
 import Modal from "@/components/shared/modal/Modal";
 
 export const metadata: Metadata = {
-  title: "Vestroll Payroll System",
+  title: "Fluxinvoice Payroll System",
   description:
     "Enterprise Payroll management web platform built with real-time analytics, cryptocurrency integration, and AI insights.",
 };

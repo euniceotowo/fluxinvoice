@@ -44,7 +44,7 @@ function AuthLayer({ children }: AuthLayoutProps) {
           width={logo.width}
           height={logo.height}
           priority
-          alt="vestroll logo"
+          alt="fluxinvoice logo"
           className="w-auto h-6"
         />
       </motion.div>
@@ -215,7 +215,7 @@ function AuthLayer({ children }: AuthLayoutProps) {
             height={mobilelogo.height}
             width={mobilelogo.width}
             priority
-            alt="vestroll logo"
+            alt="fluxinvoice logo"
             className="w-auto h-10"
           />
         </div>

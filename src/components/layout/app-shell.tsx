@@ -23,7 +23,7 @@ export default function AppShell({
   children,
   user = {
     name: "Peter",
-    email: "peter@vestroll.com",
+    email: "peter@fluxinvoice.com",
     userType: "Administrator",
     avatar: avatar,
   },
