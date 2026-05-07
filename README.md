@@ -127,20 +127,6 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 - **Documentation**: [/docs](./docs/)
 - **Issues**: [GitHub Issues](https://github.com/euniceotowo/fluxinvoice/issues)
 
-## 👥 Maintainers
-
-<table align="center">
-  <tr>
-    <td align="center">
-      <img src="https://github.com/codeze-us.png" alt="codeZe-us" width="150" />
-      <br /><br />
-      <strong>codeZe-us</strong>
-      <br /><br />
-      <a href="https://github.com/codeze-us" target="_blank">GitHub</a>
-    </td>
-  </tr>
-</table>
-
 ---
 
 ## **Thanks to all the contributors who have made this project possible!**
