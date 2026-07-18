@@ -75,3 +75,29 @@ export function formatCurrencyFromKobo(
 ): string {
   return formatCurrency(amount, { ...options, isKobo: true });
 }
+
+export function formatCompactCurrency(
+  amount: string | number | bigint | null | undefined,
+  options: FormatCurrencyOptions = {},
+): string {
+  const currency = (options.currency ?? "NGN").toUpperCase();
+  const locale = options.locale ?? (currency === "NGN" ? "en-NG" : "en-US");
+  const numericValue = parseNumberValue(amount);
+  const normalizedValue = Number.isFinite(numericValue) ? numericValue : 0;
+
+  if (!ISO_CURRENCIES.has(currency)) {
+    return formatCurrency(amount, options);
+  }
+
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      currencyDisplay: "symbol",
+      notation: "compact",
+      maximumFractionDigits: 1,
+    }).format(normalizedValue);
+  } catch {
+    return formatCurrency(amount, options);
+  }
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatCurrency, formatCurrencyFromKobo } from "./formatters";
+import { formatCompactCurrency, formatCurrency, formatCurrencyFromKobo } from "./formatters";
 
 describe("formatCurrency utility", () => {
   it("formats NGN from kobo using Intl.NumberFormat", () => {
@@ -13,6 +13,11 @@ describe("formatCurrency utility", () => {
 
   it("formats custom currency symbols for unknown currencies", () => {
     expect(formatCurrency(1200, { currency: "USDT" })).toBe("1,200.00 USDT");
+  });
+
+  it("formats compact currency for large invoice values", () => {
+    expect(formatCompactCurrency(1250000, { currency: "USD" })).toBe("$1.3M");
+    expect(formatCompactCurrency(1500000, { currency: "NGN" })).toBe("₦1.5M");
   });
 
   it("returns zero for invalid values", () => {
