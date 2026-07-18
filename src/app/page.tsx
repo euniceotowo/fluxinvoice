@@ -1,16 +1,33 @@
 import Link from "next/link";
 
+const featureCards = [
+  {
+    title: "Fast invoice creation",
+    description: "Turn a draft into a polished invoice in minutes with reusable templates and a guided flow.",
+  },
+  {
+    title: "Smarter follow-ups",
+    description: "Automate reminders and keep payment status visible so your team spends less time chasing invoices.",
+  },
+  {
+    title: "Global-friendly payments",
+    description: "Support local and cross-border settlement options for modern teams working across currencies.",
+  },
+];
+
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 flex h-14 items-center justify-between">
+    <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,_rgba(94,42,140,0.08),_transparent_55%)]">
+      <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+        <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-xl">Fluxinvoice</span>
+            <span className="text-xl font-semibold tracking-tight text-foreground">Fluxinvoice</span>
           </div>
-          <nav className="flex items-center gap-4 text-sm font-medium">
-            <Link href="#features">Features</Link>
-            <Link href="#" className="rounded-full bg-primary-100 px-4 py-2 text-white">
+          <nav className="flex items-center gap-4 text-sm font-medium text-foreground/80">
+            <Link href="#features" className="transition hover:text-foreground">
+              Features
+            </Link>
+            <Link href="#" className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90">
               Get Started
             </Link>
           </nav>
@@ -18,49 +35,56 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        <section className="space-y-6 pb-8 pt-16 md:pb-12 md:pt-24 lg:py-32 text-center">
-          <div className="container mx-auto px-4 flex max-w-[64rem] flex-col items-center gap-4 text-center">
-            <h1 className="display-1 text-black">
-              Invoices that feel calm and clear.
+        <section className="px-4 pb-8 pt-16 text-center md:pb-12 md:pt-24 lg:py-32">
+          <div className="container mx-auto flex max-w-[64rem] flex-col items-center gap-5 text-center">
+            <div className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+              Built for modern teams managing invoices and payments
+            </div>
+            <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              Invoices that feel calm, clear, and ready to send.
             </h1>
-            <p className="max-w-[42rem] leading-normal text-gray-600 sm:text-xl sm:leading-8">
-              Fluxinvoice is a minimal invoicing studio for modern teams. Draft, send, and track payments from a single, elegant workflow.
+            <p className="max-w-[42rem] text-lg leading-8 text-muted-foreground sm:text-xl">
+              Fluxinvoice helps founders and operators create polished invoices, track payment progress, and stay organized without the clutter of traditional finance tools.
             </p>
-            <div className="space-x-4 mt-4">
-              <Link href="#" className="rounded-full bg-primary-100 px-8 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90">
-                Join the beta Waitlist
+            <div className="mt-2 flex flex-wrap justify-center gap-4">
+              <Link href="#" className="rounded-full bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+                Join the beta waitlist
+              </Link>
+              <Link href="#features" className="rounded-full border border-border bg-background px-8 py-3 text-sm font-medium text-foreground transition hover:bg-accent">
+                Explore features
               </Link>
             </div>
           </div>
         </section>
 
-        <section id="features" className="container mx-auto px-4 space-y-12 py-12 md:py-24 lg:py-32 border-t">
-          <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-            <h2 className="header-1 text-black">Features</h2>
-            <p className="max-w-[85%] leading-normal text-gray-600 sm:text-lg sm:leading-7">
-              Everything you need to get paid faster, without the unnecessary clutter.
-            </p>
-          </div>
-          <div className="mx-auto grid justify-center gap-8 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-white p-8 text-center shadow-sm">
-              <h3 className="header-3 text-black">Instantly usable</h3>
-              <p className="mt-2 text-sm text-gray-600">Create invoices from a crisp template and reuse them in one click.</p>
+        <section id="features" className="border-t border-border/70 px-4 py-12 md:py-24 lg:py-32">
+          <div className="container mx-auto space-y-12">
+            <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+              <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+                Everything you need to get paid faster.
+              </h2>
+              <p className="max-w-[85%] text-lg leading-7 text-muted-foreground sm:text-xl">
+                A focused invoicing workflow for teams that care about clarity, speed, and a polished client experience.
+              </p>
             </div>
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-white p-8 text-center shadow-sm">
-              <h3 className="header-3 text-black">Smart reminders</h3>
-              <p className="mt-2 text-sm text-gray-600">Nudges that feel human so you get paid without awkward follow ups.</p>
-            </div>
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-white p-8 text-center shadow-sm">
-              <h3 className="header-3 text-black">Multiple Currencies</h3>
-              <p className="mt-2 text-sm text-gray-600">Send USD, GBP, or NGN invoices without touching spreadsheets.</p>
+            <div className="mx-auto grid justify-center gap-8 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
+              {featureCards.map((card) => (
+                <div
+                  key={card.title}
+                  className="flex flex-col items-start rounded-xl border border-border/70 bg-background/80 p-8 text-left shadow-sm"
+                >
+                  <h3 className="text-xl font-semibold tracking-tight text-foreground">{card.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">{card.description}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t py-6 md:py-0">
-        <div className="container mx-auto px-4 flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-          <p className="text-center text-sm leading-loose text-gray-600 md:text-left">
+      <footer className="border-t border-border/70 py-6 md:py-8">
+        <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 md:h-24 md:flex-row">
+          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             Built with care. © 2026 Fluxinvoice.
           </p>
         </div>
