@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Calendar } from "lucide-react";
 import { Select } from "@headlessui/react";
 import Image from "next/image";
+import {
+  getIssueInvoiceOptions,
+  invoiceFrequencies,
+} from "@/constants/invoice-scheduling";
 
 export default function ContractForm() {
   const [network, setNetwork] = useState("Ethereum");
@@ -218,15 +222,24 @@ export default function ContractForm() {
           <div className="relative">
             <select
               value={invoiceFrequency}
-              onChange={(e) => setInvoiceFrequency(e.target.value)}
+              onChange={(e) => {
+                const next = e.target.value;
+                setInvoiceFrequency(next);
+                if (
+                  issueInvoiceOn &&
+                  !getIssueInvoiceOptions(next).includes(issueInvoiceOn)
+                ) {
+                  setIssueInvoiceOn("");
+                }
+              }}
               className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-700 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
             >
               <option value="">--</option>
-              <option value="weekly">Weekly</option>
-              <option value="bi-weekly">Bi-weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="quarterly">Quarterly</option>
-              <option value="annually">Annually</option>
+              {invoiceFrequencies.map((freq) => (
+                <option key={freq} value={freq}>
+                  {freq}
+                </option>
+              ))}
             </select>
             <svg
               className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
@@ -254,11 +267,11 @@ export default function ContractForm() {
               className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-700 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
             >
               <option value="">--</option>
-              <option value="1">1st of the month</option>
-              <option value="15">15th of the month</option>
-              <option value="last">Last day of the month</option>
-              <option value="start">Start of contract period</option>
-              <option value="end">End of contract period</option>
+              {getIssueInvoiceOptions(invoiceFrequency).map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
             </select>
             <svg
               className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"

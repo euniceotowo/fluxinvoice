@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { IssueInvoiceOn } from "@/constants/invoice-scheduling";
 
 export interface BtnProp {
   variant: "primary" | "secondary" | "outline";
@@ -51,7 +52,7 @@ export type PaymentDetails = {
 };
 export type InvoiceDetails = {
   invoiceFrequency: string;
-  issueInvoiceOn: string;
+  issueInvoiceOn: IssueInvoiceOn | "";
   paymentDue: string;
 };
 
@@ -105,7 +106,7 @@ export interface ContractFormData {
   amount: string;
   calculatedAmount: string;
   invoiceFrequency: string;
-  issueInvoiceOn: string;
+  issueInvoiceOn: IssueInvoiceOn | "";
   paymentDue: string;
   firstInvoiceType: "full" | "custom";
   firstInvoiceDate: string;

@@ -9,6 +9,11 @@ import { z } from "zod";
 import { currencies } from "@/constants";
 
 import { ContractFormData } from "@/types/interface";
+import {
+  getIssueInvoiceOptions,
+  invoiceFrequencies,
+  validateIssueInvoiceOn,
+} from "@/constants/invoice-scheduling";
 
 interface FormErrors {
   [key: string]: string;
@@ -42,20 +47,6 @@ const assets = [
   { label: "Stellar", icon: "/stellar.svg" },
 ];
 
-const invoiceFrequencies = [
-  "Weekly",
-  "Bi-weekly",
-  "Monthly",
-  "Quarterly",
-  "Annually",
-];
-const issueInvoiceOptions = [
-  "1st of the month",
-  "15th of the month",
-  "Last day of the month",
-  "Start of contract period",
-  "End of contract period",
-];
 const paymentDueOptions = [
   "Immediately",
   "Within 7 days",
@@ -89,6 +80,7 @@ const milestoneSchema = z.object({
 });
 
 const contractSchema = z.object({
+  contractType: z.number(),
   startDate: z.string().min(1, "Start date is required"),
   endDate: z.string().optional(),
   terminationNotice: z.string().optional(),
@@ -102,7 +94,10 @@ const contractSchema = z.object({
       "Amount must be greater than 0"
     ),
   calculatedAmount: z.string().optional(),
-  invoiceFrequency: z.string().min(1, "Invoice frequency is required"),
+  invoiceFrequency: z.enum(
+    invoiceFrequencies,
+    "Invoice frequency is required",
+  ),
   issueInvoiceOn: z.string().optional(),
   paymentDue: z.string().min(1, "Payment due is required"),
   firstInvoiceType: z.enum(["full", "custom"]),
@@ -117,6 +112,19 @@ const contractSchema = z.object({
   taxId: z.string().optional(),
   taxRate: z.string().optional(),
   uploadedFiles: z.array(z.any()).optional(),
+}).superRefine((data, ctx) => {
+  if (data.contractType === 3) return;
+  const issueInvoiceOnError = validateIssueInvoiceOn(
+    data.invoiceFrequency,
+    data.issueInvoiceOn ?? "",
+  );
+  if (issueInvoiceOnError) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["issueInvoiceOn"],
+      message: issueInvoiceOnError,
+    });
+  }
 });
 
 export default function ContractDetails({
@@ -169,7 +177,15 @@ export default function ContractDetails({
   }, [formData]);
 
   const handleInputChange = (field: keyof ContractFormData, value: string) => {
-    onFormDataChange({ ...formData, [field]: value });
+    const next = { ...formData, [field]: value };
+    if (
+      field === "invoiceFrequency" &&
+      formData.issueInvoiceOn &&
+      !getIssueInvoiceOptions(value).includes(formData.issueInvoiceOn)
+    ) {
+      next.issueInvoiceOn = "";
+    }
+    onFormDataChange(next);
     if (errors[field]) {
       onErrorsChange({ ...errors, [field]: "" });
     }
@@ -544,10 +560,11 @@ export default function ContractDetails({
                 <Dropdown
                   label="Issue Invoice on"
                   value={formData.issueInvoiceOn}
-                  options={issueInvoiceOptions}
+                  options={getIssueInvoiceOptions(formData.invoiceFrequency)}
                   onChange={(value) =>
                     handleInputChange("issueInvoiceOn", value)
                   }
+                  error={errors.issueInvoiceOn}
                   placeholder="--"
                 />
               </div>
