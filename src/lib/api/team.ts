@@ -1,5 +1,20 @@
 import { apiClient } from "../api-client";
-import { CreateInvitationInput, ResendInvitationInput, ListInvitationsInput } from "@/server/validations/invitation.schema";
+
+export interface CreateInvitationInput {
+  email: string;
+  role: string;
+  message?: string;
+}
+
+export interface ResendInvitationInput {
+  invitationId: string;
+}
+
+export interface ListInvitationsInput {
+  page?: number;
+  limit?: number;
+  status?: string;
+}
 
 export interface AcceptInvitationPayload {
   token: string;

@@ -7,7 +7,6 @@ export default defineConfig({
     environment: "node",
     include: ["**/*.{test,spec}.{js,ts,jsx,tsx}"],
     exclude: ["node_modules", ".next", "dist"],
-    setupFiles: ["./src/server/test/setup.ts"],
     coverage: {
       provider: "v8",
       reporter: ["html", "text-summary"],
