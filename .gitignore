@@ -55,3 +55,6 @@ package-lock.json
 .cursor/
 .husky/
 .opencode/
+
+skills-lock.json
+issue.md
