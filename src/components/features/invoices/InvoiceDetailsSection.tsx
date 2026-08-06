@@ -21,6 +21,51 @@ function calcBreakdown(amount: number) {
   return { subtotal, vat, total, vatRate };
 }
 
+function getCurrencyDetails(currencyName?: string) {
+  const currency = (currencyName || "").trim().toUpperCase();
+  if (currency === "USDT") {
+    return { name: "USDT", icon: "/Tether.svg" };
+  }
+  if (currency === "USDC") {
+    return { name: "USDC", icon: "/usdc.svg" };
+  }
+  if (currency === "BTC") {
+    return { name: "BTC", icon: "/bitcoin.svg" };
+  }
+  if (currency === "ETH" || currency === "ETHEREUM") {
+    return { name: "ETH", icon: "/eth.svg" };
+  }
+  if (currency === "XLM" || currency === "STELLAR") {
+    return { name: "XLM", icon: "/stellar.svg" };
+  }
+  return { name: currency || "USDT", icon: "/Tether.svg" };
+}
+
+function getNetworkDetails(networkName?: string, paidIn?: string) {
+  const net = (networkName || "").trim().toUpperCase();
+  if (net === "STELLAR") {
+    return { name: "Stellar", icon: "/stellar.svg" };
+  }
+  if (net === "ETHEREUM") {
+    return { name: "Ethereum", icon: "/eth.svg" };
+  }
+  if (net === "POLYGON") {
+    return { name: "Polygon", icon: "/eth.svg" };
+  }
+  if (net === "ARBITRUM") {
+    return { name: "Arbitrum", icon: "/eth.svg" };
+  }
+  if (net === "OPTIMISM") {
+    return { name: "Optimism", icon: "/eth.svg" };
+  }
+
+  const currency = (paidIn || "").trim().toUpperCase();
+  if (currency === "XLM" || currency === "STELLAR") {
+    return { name: "Stellar", icon: "/stellar.svg" };
+  }
+  return { name: "Ethereum", icon: "/eth.svg" };
+}
+
 interface Props {
   invoice: Invoice;
 }
@@ -28,6 +73,8 @@ interface Props {
 export default function InvoiceDetailsSection({ invoice }: Props) {
   const { subtotal, vat, total, vatRate } = calcBreakdown(invoice.amount);
   const dueDate = calculateDueDate(invoice.issueDate);
+  const currencyDetails = getCurrencyDetails(invoice.paidIn);
+  const networkDetails = getNetworkDetails(invoice.network as string | undefined, invoice.paidIn);
 
   const statusChip =
     invoice.status === "Pending"
@@ -79,7 +126,7 @@ export default function InvoiceDetailsSection({ invoice }: Props) {
               Contract Monthly Payment
             </p>
             <div className="flex justify-end items-center gap-2">
-              <Image src="/usdt.png" alt="Ethereum" width={18} height={18} />
+              <Image src={currencyDetails.icon} alt={currencyDetails.name} width={18} height={18} />
               <p className="text-gray-800 text-[13px] sm:text-sm font-medium">
                 {invoice.paidIn}
               </p>
@@ -99,13 +146,13 @@ export default function InvoiceDetailsSection({ invoice }: Props) {
             </p>
             <div className="flex justify-end items-center gap-2">
               <Image
-                src="/ethereum-icon.png"
-                alt="Ethereum"
+                src={networkDetails.icon}
+                alt={networkDetails.name}
                 width={18}
                 height={18}
               />
               <p className="text-gray-800 text-[13px] sm:text-sm font-medium">
-                Ethereum
+                {networkDetails.name}
               </p>
             </div>
           </div>
