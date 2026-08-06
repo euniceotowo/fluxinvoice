@@ -10,7 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Mail, UserPlus } from "lucide-react";
-import { createInvitationSchema } from "@/server/validations/invitation.schema";
+
+const createInvitationSchema = z.object({
+  email: z.string().email("Enter a valid email address"),
+  role: z.enum(["admin", "hr_manager", "payroll_manager", "employee"]),
+  message: z.string().optional(),
+});
 
 const roleOptions = [
   { value: "admin", label: "Administrator" },

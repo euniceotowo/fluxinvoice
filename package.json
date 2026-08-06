@@ -18,7 +18,6 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "db:seed:local": "psql -d fluxinvoice_dev -f scripts/db/seed-local.sql",
-    "db:prune-logs": "tsx scripts/prune-logs.ts",
     "swagger:generate": "tsx scripts/generate-swagger.ts"
   },
   "dependencies": {

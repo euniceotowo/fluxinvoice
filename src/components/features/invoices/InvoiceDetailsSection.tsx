@@ -3,15 +3,14 @@
 import { formatCurrency } from "@/utils/formatters";
 import { Invoice } from "@/lib/data/invoices";
 import Image from "next/image";
-import { formatDateCustom } from "@/utils/date";
+import { formatDateCustom, parseDateInput } from "@/utils/date";
+import { addDays } from "date-fns";
 
 // helpers
 function calculateDueDate(issueDate: string): string {
-  const parsed = Date.parse(issueDate);
-  if (isNaN(parsed)) return "N/A";
-  const due = new Date(parsed);
-  due.setDate(due.getDate() + 14);
-  return formatDateCustom(due, "d MMMM yyyy");
+  const parsed = parseDateInput(issueDate);
+  if (!parsed) return "N/A";
+  return formatDateCustom(addDays(parsed, 14), "d MMMM yyyy");
 }
 
 function calcBreakdown(amount: number) {

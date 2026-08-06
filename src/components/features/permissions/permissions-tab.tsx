@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import BillingEmailSection from "./billing-email-section";
 import PermissionsTableSection from "./permissions-table-section";
 import { useRouter } from "next/navigation";
-import PermissionFormView from "@/app/(dashboard)/settings/permissions/permission-form/page";
 
 const initialUsers: User[] = [
   {

@@ -3,6 +3,11 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Dropdown from "@/components/ui/dropdown";
+import {
+  getIssueInvoiceOptions,
+  invoiceFrequencies,
+  IssueInvoiceOn,
+} from "@/constants/invoice-scheduling";
 
 interface ContractDetailsFormProps {
   onDataChange?: (data: ContractFormData) => void;
@@ -17,7 +22,7 @@ export interface ContractFormData {
   amount: string;
   paymentFrequency: "Hourly" | "Daily" | "Weekly" | "Per Deliverable";
   invoiceFrequency: string;
-  issueInvoiceOn: string;
+  issueInvoiceOn: IssueInvoiceOn | "";
   paymentDue: string;
   firstInvoiceType: "full" | "custom";
   firstInvoiceDate: string;
@@ -54,7 +59,17 @@ const ContractDetailsForm: React.FC<ContractDetailsFormProps> = ({
   }, [formData, onDataChange]);
 
   const updateField = (field: keyof ContractFormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => {
+      const next = { ...prev, [field]: value };
+      if (
+        field === "invoiceFrequency" &&
+        prev.issueInvoiceOn &&
+        !getIssueInvoiceOptions(value).includes(prev.issueInvoiceOn)
+      ) {
+        next.issueInvoiceOn = "";
+      }
+      return next;
+    });
   };
 
   const networks = [
@@ -273,13 +288,7 @@ const ContractDetailsForm: React.FC<ContractDetailsFormProps> = ({
           <Dropdown
             label="Invoice frequency"
             value={formData.invoiceFrequency}
-            options={[
-              "Weekly",
-              "Bi-weekly",
-              "Monthly",
-              "Quarterly",
-              "Annually",
-            ]}
+            options={invoiceFrequencies}
             onChange={(value) => updateField("invoiceFrequency", value)}
             placeholder="--"
           />
@@ -288,13 +297,7 @@ const ContractDetailsForm: React.FC<ContractDetailsFormProps> = ({
           <Dropdown
             label="Issue invoice on"
             value={formData.issueInvoiceOn}
-            options={[
-              "1st of the month",
-              "15th of the month",
-              "Last day of the month",
-              "Start of contract period",
-              "End of contract period",
-            ]}
+            options={getIssueInvoiceOptions(formData.invoiceFrequency)}
             onChange={(value) => updateField("issueInvoiceOn", value)}
             placeholder="--"
           />

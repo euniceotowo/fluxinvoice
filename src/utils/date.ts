@@ -1,4 +1,39 @@
-import { format, formatDistanceToNow, isValid, parseISO } from "date-fns";
+import {
+  format,
+  formatDistanceToNow,
+  isValid,
+  parse,
+  parseISO,
+} from "date-fns";
+
+const ORDINAL_DATE_FORMATS = ["do MMM yyyy", "do MMMM yyyy"];
+
+/**
+ * Parse a date string or Date object into a valid Date.
+ *
+ * Accepts ISO strings (e.g. "2025-10-25") as well as human-readable
+ * ordinal dates used in invoice data (e.g. "25th Oct 2025").
+ * Returns null when the input cannot be parsed.
+ */
+export function parseDateInput(
+  dateInput: string | Date | null | undefined,
+): Date | null {
+  if (dateInput == null || dateInput === "") return null;
+
+  if (dateInput instanceof Date) {
+    return isValid(dateInput) ? dateInput : null;
+  }
+
+  const iso = parseISO(dateInput);
+  if (isValid(iso)) return iso;
+
+  for (const pattern of ORDINAL_DATE_FORMATS) {
+    const parsed = parse(dateInput, pattern, new Date());
+    if (isValid(parsed)) return parsed;
+  }
+
+  return null;
+}
 
 /**
  * Format a date string or Date object to a consistent human-readable format.

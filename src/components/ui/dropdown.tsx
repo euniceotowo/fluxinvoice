@@ -11,7 +11,7 @@ interface DropdownOption {
 interface DropdownProps {
   label: string;
   value: string;
-  options: DropdownOption[] | string[];
+  options: DropdownOption[] | readonly string[];
   onChange: (value: string) => void;
   error?: string;
   placeholder?: string;
