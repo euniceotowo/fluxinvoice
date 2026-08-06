@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import { join } from "path";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  output: process.platform === "win32" ? undefined : "standalone",
   compress: true,
   serverExternalPackages: ["ioredis"],
   turbopack: {

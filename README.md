@@ -70,24 +70,24 @@ fluxinvoice/
 │   │   ├── services/       # Business Logic (Payroll, Tax, Stellar)
 │   │   └── db/             # Drizzle Schema & Migrations
 │   └── lib/                # Shared utilities & SDK wrappers
-├── docs/                   # Comprehensive documentation
+├── ARCHITECTURE.md         # Architecture and engineering guidance
 ├── public/                 # Static assets
 └── scripts/                # Utility scripts for DB and Swagger
 ```
 
 ## Documentation
 
-Comprehensive documentation is available in the [`/docs`](./docs/) folder:
+Project documentation is available in the repository root:
 
 ### Quick Start
 
-- **[Main Documentation](./docs/README.md)** - Complete documentation index
+- **[Architecture Guide](./ARCHITECTURE.md)** - Architecture patterns and implementation guidance
 
 ### Core Documentation
 
-- [Architecture Overview](./docs/architecture/overview.md) - System architecture
-- [Project Overview](./docs/context/project-overview.md) - Vision and goals
-- [User Personas](./docs/context/user-personas.md) - Account types and use cases
+- [Architecture Overview](./ARCHITECTURE.md) - System architecture and project conventions
+- [Contributing Guide](./CONTRIBUTING.md) - Contribution workflow and expectations
+- [Security Policy](./SECURITY.md) - Supported versions and vulnerability reporting
 
 ## Use Cases
 
@@ -124,7 +124,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ## Support
 
-- **Documentation**: [/docs](./docs/)
+- **Documentation**: [ARCHITECTURE.md](./ARCHITECTURE.md)
 - **Issues**: [GitHub Issues](https://github.com/euniceotowo/fluxinvoice/issues)
 
 ---
