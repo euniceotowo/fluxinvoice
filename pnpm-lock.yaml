@@ -68,9 +68,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.89.0
         version: 5.95.2(react@19.1.0)
-      '@types/otplib':
-        specifier: ^10.0.0
-        version: 10.0.0
       '@types/qrcode':
         specifier: ^1.5.5
         version: 1.5.6
@@ -2848,10 +2845,6 @@ packages:
 
   '@types/node@22.7.5':
     resolution: {integrity: sha512-jML7s2NAzMWc//QSJ1a3prpk78cOPchGvXJsC3C6R6PSMoooztvRVQEz89gmBTBY1SPMaqo5teB4uNHPdetShQ==}
-
-  '@types/otplib@10.0.0':
-    resolution: {integrity: sha512-fxgTy0WQiylowcAuKgCdMW/DcWAz/Qo/GZjY5sLD7/z12RXXjIardQnsZU2iSHWFznVlE+7VstBWZnHUA8aF8Q==}
-    deprecated: This is a stub types definition. otplib provides its own type definitions, so you do not need this installed.
 
   '@types/pako@2.0.4':
     resolution: {integrity: sha512-VWDCbrLeVXJM9fihYodcLiIv0ku+AlOa/TQ1SvYOaBuyrSKgEcro95LJyIsJ4vSo6BXIxOKxiJAat04CmST9Fw==}
@@ -9674,10 +9667,6 @@ snapshots:
   '@types/node@22.7.5':
     dependencies:
       undici-types: 6.19.8
-
-  '@types/otplib@10.0.0':
-    dependencies:
-      otplib: 13.4.0
 
   '@types/pako@2.0.4': {}
 
