@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import InputField from "@/components/ui/input-field";
 import Dropdown from "@/components/ui/dropdown";
@@ -30,6 +32,7 @@ const businessRegistrationTypes = [
 ];
 
 export default function CompleteKYBPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState<KybFormData>({
     businessRegistrationType: "",
     businessRegistrationNo: "",
@@ -38,6 +41,7 @@ export default function CompleteKYBPage() {
     formC02C07Path: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleInputChange = (field: keyof KybFormData, value: string) => {
@@ -85,7 +89,7 @@ export default function CompleteKYBPage() {
         formC02C07Path: formData.formC02C07Path || undefined,
       });
 
-      // TODO: Handle success (show confirmation, update checklist state)
+      setIsSuccess(true);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred. Please try again."
@@ -93,6 +97,11 @@ export default function CompleteKYBPage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleBackToDashboard = () => {
+    router.push("/dashboard");
+    router.refresh();
   };
 
   const containerVariants = {
@@ -107,6 +116,43 @@ export default function CompleteKYBPage() {
     hidden: { opacity: 0, y: 15 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
+
+  if (isSuccess) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md dark:bg-gray-900"
+      >
+        <div className="flex flex-col items-center text-center space-y-4 py-8">
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <CheckCircle size={64} className="text-green-500" />
+          </motion.div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            KYB submitted successfully
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md">
+            Your business verification documents have been submitted and are pending review.
+            Your onboarding checklist will reflect this progress.
+          </p>
+          <Button
+            type="button"
+            variant="default"
+            size="lg"
+            onClick={handleBackToDashboard}
+            className="w-full max-w-sm bg-[#5E2A8C] py-6 lg:h-[56px] mt-4 hover:bg-[#4A1F6F] text-white rounded-[12px] transition-colors"
+          >
+            Back to dashboard
+          </Button>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
