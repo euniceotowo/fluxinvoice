@@ -9,6 +9,7 @@ import InputField from "@/components/ui/input-field";
 import Dropdown from "@/components/ui/dropdown";
 import FileUpload from "@/components/ui/file-upload";
 import { KybService } from "@/lib/api/kyb";
+import { RequestError } from "@/lib/api-client";
 
 interface KybFormData {
   businessRegistrationType: string;
@@ -31,6 +32,45 @@ const businessRegistrationTypes = [
   "Other",
 ];
 
+const MAX_FILE_SIZE_MB = 5;
+
+class S3UploadError extends Error {
+  public status: number;
+
+  constructor(status: number) {
+    super(`S3 upload failed with status ${status}`);
+    this.name = "S3UploadError";
+    this.status = status;
+  }
+}
+
+function getUploadErrorMessage(file: File, error: unknown): string {
+  if (error instanceof RequestError) {
+    if (error.status === 401 || error.status === 403) {
+      return "Your session may have expired or you don't have upload permission. Please refresh the page and try again.";
+    }
+    if (error.status === 413) {
+      return `"${file.name}" is too large. Files must be ${MAX_FILE_SIZE_MB}MB or smaller.`;
+    }
+    const detail = error.details?.detail;
+    return `We couldn't prepare the upload for "${file.name}". ${
+      detail ? `${detail} ` : ""
+    }Please try again or contact support if the issue persists.`;
+  }
+
+  if (error instanceof S3UploadError) {
+    if (error.status === 401 || error.status === 403) {
+      return "The upload could not be authorized. Please try uploading the file again.";
+    }
+    if (error.status === 413 || error.status === 411) {
+      return `"${file.name}" is too large. Files must be ${MAX_FILE_SIZE_MB}MB or smaller.`;
+    }
+    return `Uploading "${file.name}" failed (HTTP ${error.status}). Please check your internet connection and try again.`;
+  }
+
+  return `We couldn't upload "${file.name}". Please check your internet connection and try again; if the problem persists, refresh the page and retry.`;
+}
+
 export default function CompleteKYBPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<KybFormData>({
@@ -43,6 +83,9 @@ export default function CompleteKYBPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadErrors, setUploadErrors] = useState<
+    Partial<Record<keyof KybFormData, string>>
+  >({});
 
   const handleInputChange = (field: keyof KybFormData, value: string) => {
     setFormData((prev) => ({
@@ -52,6 +95,8 @@ export default function CompleteKYBPage() {
   };
 
   const uploadFile = async (file: File, field: keyof KybFormData) => {
+    setUploadErrors((prev) => ({ ...prev, [field]: undefined }));
+
     try {
       // Step 1 — get presigned S3 upload URL via the service
       const { signedUrl, key } = await KybService.getUploadUrl(
@@ -66,12 +111,12 @@ export default function CompleteKYBPage() {
         headers: { "Content-Type": file.type },
       });
 
-      if (!uploadRes.ok) throw new Error("Failed to upload to S3");
+      if (!uploadRes.ok) throw new S3UploadError(uploadRes.status);
 
       setFormData((prev) => ({ ...prev, [field]: key }));
-    } catch (error) {
-      console.error("Upload failed:", error);
-      setError("File upload failed. Please try again.");
+    } catch (err) {
+      console.error("Upload failed:", err);
+      setUploadErrors((prev) => ({ ...prev, [field]: getUploadErrorMessage(file, err) }));
     }
   };
 
@@ -215,6 +260,7 @@ export default function CompleteKYBPage() {
             maxSize={5}
             isUploading={isSubmitting}
             uploadProgress={0}
+            error={uploadErrors.incorporationCertificatePath}
           />
         </motion.div>
 
@@ -228,6 +274,7 @@ export default function CompleteKYBPage() {
             maxSize={5}
             isUploading={isSubmitting}
             uploadProgress={0}
+            error={uploadErrors.memorandumArticlePath}
           />
         </motion.div>
 
@@ -241,6 +288,7 @@ export default function CompleteKYBPage() {
             maxSize={5}
             isUploading={isSubmitting}
             uploadProgress={0}
+            error={uploadErrors.formC02C07Path}
           />
         </motion.div>
 
