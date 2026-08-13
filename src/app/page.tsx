@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 const featureCards = [
   {
@@ -34,26 +37,34 @@ const steps = [
 ];
 
 export default function Home() {
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+
   return (
     <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,_rgba(94,42,140,0.08),_transparent_55%)]">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
+      >
+        Skip to main content
+      </a>
       <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <span className="text-xl font-semibold tracking-tight text-foreground">Fluxinvoice</span>
           </div>
-          <nav className="flex items-center gap-4 text-sm font-medium text-foreground/80">
+          <nav aria-label="Primary" className="flex items-center gap-4 text-sm font-medium text-foreground/80">
             <Link href="#features" className="transition hover:text-foreground">
               Features
             </Link>
-            <Link href="#" className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+            <Link href="#waitlist" className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90">
               Get Started
             </Link>
           </nav>
         </div>
       </header>
 
-      <main className="flex-1">
-        <section className="px-4 pb-8 pt-16 text-center md:pb-12 md:pt-24 lg:py-32">
+      <main id="main-content" className="flex-1">
+        <section aria-label="Introduction" className="px-4 pb-8 pt-16 text-center md:pb-12 md:pt-24 lg:py-32">
           <div className="container mx-auto flex max-w-[64rem] flex-col items-center gap-5 text-center">
             <div className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
               Built for modern teams managing invoices and payments
@@ -65,7 +76,7 @@ export default function Home() {
               Fluxinvoice helps founders and operators create polished invoices, track payment progress, and stay organized without the clutter of traditional finance tools.
             </p>
             <div className="mt-2 flex flex-wrap justify-center gap-4">
-              <Link href="#" className="rounded-full bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+              <Link href="#waitlist" className="rounded-full bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90">
                 Join the beta waitlist
               </Link>
               <Link href="#features" className="rounded-full border border-border bg-background px-8 py-3 text-sm font-medium text-foreground transition hover:bg-accent">
@@ -128,19 +139,35 @@ export default function Home() {
             <p className="max-w-[36rem] text-lg leading-7 text-muted-foreground">
               Join the beta waitlist and be first in line when Fluxinvoice opens its doors.
             </p>
-            <form className="flex w-full max-w-md flex-col gap-3 sm:flex-row" aria-label="Join the beta waitlist">
-              <input
-                type="email"
-                required
-                placeholder="you@company.com"
-                className="h-11 flex-1 rounded-full border border-border bg-background px-5 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary"
-              />
-              <button
-                type="submit"
-                className="h-11 rounded-full bg-primary px-8 text-sm font-medium text-primary-foreground transition hover:opacity-90"
-              >
-                Join waitlist
-              </button>
+            <form
+              className="flex w-full max-w-md flex-col gap-3 sm:flex-row"
+              aria-label="Join the beta waitlist"
+              onSubmit={(event) => {
+                event.preventDefault();
+                setWaitlistSubmitted(true);
+              }}
+            >
+              {waitlistSubmitted ? (
+                <p className="w-full rounded-full border border-primary/20 bg-primary/10 px-5 py-3 text-sm font-medium text-primary">
+                  You're on the list — we'll be in touch soon.
+                </p>
+              ) : (
+                <>
+                  <input
+                    type="email"
+                    required
+                    placeholder="you@company.com"
+                    aria-label="Email address"
+                    className="h-11 flex-1 rounded-full border border-border bg-background px-5 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary"
+                  />
+                  <button
+                    type="submit"
+                    className="h-11 rounded-full bg-primary px-8 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+                  >
+                    Join waitlist
+                  </button>
+                </>
+              )}
             </form>
           </div>
         </section>
