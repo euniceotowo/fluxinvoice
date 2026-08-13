@@ -15,6 +15,24 @@ const featureCards = [
   },
 ];
 
+const steps = [
+  {
+    step: "01",
+    title: "Create",
+    description: "Pick a template, add line items, and brand it your way in minutes.",
+  },
+  {
+    step: "02",
+    title: "Send",
+    description: "Deliver a polished invoice with automated reminders and clear status tracking.",
+  },
+  {
+    step: "03",
+    title: "Get paid",
+    description: "Accept local and cross-border payments, then reconcile automatically.",
+  },
+];
+
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,_rgba(94,42,140,0.08),_transparent_55%)]">
@@ -78,6 +96,52 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+      <section id="how-it-works" className="border-t border-border/70 px-4 py-12 md:py-24 lg:py-32">
+          <div className="container mx-auto space-y-12">
+            <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+              <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+                From draft to payment in three steps.
+              </h2>
+              <p className="max-w-[85%] text-lg leading-7 text-muted-foreground sm:text-xl">
+                A simple flow that keeps every invoice moving forward without the busywork.
+              </p>
+            </div>
+            <div className="mx-auto grid gap-8 sm:max-w-[52rem] sm:grid-cols-3">
+              {steps.map((step) => (
+                <div key={step.step} className="flex flex-col items-start gap-3">
+                  <span className="text-sm font-semibold tracking-widest text-primary">{step.step}</span>
+                  <h3 className="text-lg font-semibold tracking-tight text-foreground">{step.title}</h3>
+                  <p className="text-sm leading-6 text-muted-foreground">{step.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="waitlist" className="border-t border-border/70 px-4 py-12 md:py-24 lg:py-32">
+          <div className="container mx-auto flex max-w-[48rem] flex-col items-center gap-6 text-center">
+            <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              Ready to get paid faster?
+            </h2>
+            <p className="max-w-[36rem] text-lg leading-7 text-muted-foreground">
+              Join the beta waitlist and be first in line when Fluxinvoice opens its doors.
+            </p>
+            <form className="flex w-full max-w-md flex-col gap-3 sm:flex-row" aria-label="Join the beta waitlist">
+              <input
+                type="email"
+                required
+                placeholder="you@company.com"
+                className="h-11 flex-1 rounded-full border border-border bg-background px-5 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary"
+              />
+              <button
+                type="submit"
+                className="h-11 rounded-full bg-primary px-8 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+              >
+                Join waitlist
+              </button>
+            </form>
           </div>
         </section>
       </main>
