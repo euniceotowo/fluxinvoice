@@ -6,22 +6,18 @@ export interface FormatCurrencyOptions {
   maximumFractionDigits?: number;
 }
 
-const ISO_CURRENCIES = new Set([
-  "NGN",
-  "USD",
-  "EUR",
-  "GBP",
-  "JPY",
-  "AUD",
-  "CAD",
-  "CHF",
-  "CNY",
-  "ZAR",
-  "KES",
-  "GHS",
-  "AED",
-  "INR",
-]);
+function isSupportedCurrency(currency: string): boolean {
+  try {
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      currencyDisplay: "symbol",
+    }).format(0);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function parseNumberValue(value: string | number | bigint | null | undefined): number {
   if (value == null || value === "") {
@@ -29,14 +25,21 @@ function parseNumberValue(value: string | number | bigint | null | undefined): n
   }
 
   if (typeof value === "number") {
-    return value;
+    return Number.isFinite(value) ? value : NaN;
   }
 
   if (typeof value === "bigint") {
-    return Number(value);
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : NaN;
   }
 
-  return Number(String(value).replace(/,/g, ""));
+  const trimmed = String(value).replace(/,/g, "").trim();
+  if (trimmed === "") {
+    return NaN;
+  }
+
+  const numericValue = Number(trimmed);
+  return Number.isFinite(numericValue) ? numericValue : NaN;
 }
 
 export function formatCurrency(
@@ -53,7 +56,7 @@ export function formatCurrency(
   const displayValue = isKobo ? numericValue / 100 : numericValue;
   const normalizedValue = Number.isFinite(displayValue) ? displayValue : 0;
 
-  if (!ISO_CURRENCIES.has(currency.toUpperCase())) {
+  if (!isSupportedCurrency(currency)) {
     return normalizedValue.toLocaleString(locale, {
       minimumFractionDigits,
       maximumFractionDigits,
@@ -85,7 +88,7 @@ export function formatCompactCurrency(
   const numericValue = parseNumberValue(amount);
   const normalizedValue = Number.isFinite(numericValue) ? numericValue : 0;
 
-  if (!ISO_CURRENCIES.has(currency)) {
+  if (!isSupportedCurrency(currency)) {
     return formatCurrency(amount, options);
   }
 
